@@ -1,7 +1,9 @@
 (defpackage connect-any-service.head
   (:import-from :jonathan :to-json)
-  (:import-from :flexi-streams :octets-to-string)
-  (:import-from :flexi-streams :string-to-octets)
+  ;; (:import-from :flexi-streams :octets-to-string)
+  ;; (:import-from :flexi-streams :string-to-octets)
+  (:import-from :babel :octets-to-string)
+  (:import-from :babel :string-to-octets)
   (:use :cl :clack :yason :s-base64 :local-time)
   (:export
    :to-json-a

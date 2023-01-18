@@ -19,13 +19,15 @@
 (defun handle-json (raw-body content-length route-fn)
   (let ((body (stream-recive-string raw-body
                                     content-length)))
+    (format t "body: ~A~%" body)
     (if body
         (let ((data (parse body)))
           (funcall route-fn
                    data))
         (to-json-a
-         `(("msg" . 200)
-           ("result" . "data is null"))))))
+         `(("code" . 200)
+           ("msg" . "data is null")
+           ("data" . ""))))))
 
 (defun handler (env)
   ;; (format t "get env:~A~%" env)
@@ -36,15 +38,16 @@
       (if route-fn
           (if (contains? "application/json"
                          content-type)
-              `(200
-                nil
-                (,(handler-case
-                      (handle-json raw-body
-                                   content-length
-                                   route-fn)
-                    (error (c)
-                      (format t "[ERROR]: ~A~%" c)
-                      (format nil "error ~A" c)))))
+              (handler-case
+                 (let ((res (handle-json raw-body content-length route-fn)))
+                   `(200
+                     nil
+                     (,res)))
+                (error (c)
+                  (format t "[ERROR]: ~A~%" c)
+                  `(403
+                    nil
+                    (,(format nil "error: ~A" c)))))
               `(404
                 nil
                 (,(format nil "Only support json data."))))
