@@ -1,5 +1,4 @@
-* Connect-Any-Service 
+* Connect-Any-Service
 
 ** Usage
-
 ** Installation

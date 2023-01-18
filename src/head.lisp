@@ -5,7 +5,14 @@
   (:use :cl :clack :yason :s-base64 :local-time)
   (:export
    :to-json-a
+
+   :if-return
+   :when-return
+
    :assoc-value
+   :assoc-value-l
+   :assoc-v
+
    :stream-recive-string
    :load-json-file
    :encode-str-base64))
@@ -16,8 +23,33 @@
 (defun to-json-a (alist)
   (to-json alist :from :alist))
 
-(defun assoc-value (plist key)
-  (cdr (assoc key plist :test #'string=)))
+(defmacro if-return (body &body (then-body))
+  (let ((g (gensym)))
+    `(let ((,g ,body))
+     (if ,g
+         ,g
+         ,then-body))))
+
+(defmacro when-return (body)
+  (let ((g (gensym)))
+    `(let ((,g ,body))
+       (when ,g
+         ,g))))
+
+(defun assoc-value (plist keys)
+  (if (listp keys)
+      (if keys
+          (assoc-value (cdr
+                        (assoc (car keys) plist :test #'string=))
+                       (cdr keys))
+          plist)
+      (cdr (assoc keys plist :test #'string=))))
+
+(defun assoc-value-l (plist keys)
+  (when (listp keys)
+    (mapcar #'(lambda (key)
+                (assoc-value plist key))
+            keys)))
 
 (defun stream-recive-string (stream length)
   (let ((result (make-array length :element-type '(unsigned-byte 8))))
