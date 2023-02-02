@@ -1,4 +1,5 @@
 (defpackage connect-any-service.head
+  (:import-from :uiop :run-program)
   (:import-from :jonathan :to-json)
   ;; (:import-from :flexi-streams :octets-to-string)
   ;; (:import-from :flexi-streams :string-to-octets)
@@ -17,7 +18,9 @@
 
    :stream-recive-string
    :load-json-file
-   :encode-str-base64))
+   :encode-str-base64
+
+   :run-shell))
 (in-package :connect-any-service.head)
 
 (setf yason:*parse-object-as* :alist)
@@ -25,12 +28,15 @@
 (defun to-json-a (alist)
   (to-json alist :from :alist))
 
+(defun run-shell (program)
+  (run-program program))
+
 (defmacro if-return (body &body (then-body))
   (let ((g (gensym)))
     `(let ((,g ,body))
-     (if ,g
-         ,g
-         ,then-body))))
+      (if ,g
+          ,g
+          ,then-body))))
 
 (defmacro when-return (body)
   (let ((g (gensym)))

@@ -12,18 +12,24 @@
    :device-get-gid
    :register-device
    :search-device
-   :delete-device
-   ))
+   :delete-device))
 (in-package :connect-any-service.dbo)
 
+(defvar *config-dir* (truename #P"~/.connectanys/data/"))
+
 (defun connect-dbi ()
-  (dbi:connect-cached :mysql
-                      :database-name "connectany"
-                      :host "124.222.100.66"
-                      :username "connectany"
-                      :password "12138"))
-
-
+  (let ((path *config-dir*))
+    (ensure-directories-exist path)
+    (dbi:connect-cached :sqlite3
+                        :database-name (merge-pathnames "data.db"
+                                                        path))))
+(let ((path *config-dir*))
+  (ensure-directories-exist path)
+  (run-shell (format nil
+                     "touch ~A"
+                     (namestring
+                      (merge-pathnames "data.db"
+                                       path)))))
 ;; 定义表
 (deftable user ()
   ((name :col-type (:varchar 20)))
@@ -77,7 +83,7 @@
 (defmethod register-device (gid type name (user user))
   (let ((mito:*connection* (connect-dbi)))
     (if-return (search-device gid)
-    (create-dao 'device :gid gid :type type :name name :user user))))
+     (create-dao 'device :gid gid :type type :name name :user user))))
 
 (defmethod delete-device ((device device))
   (let ((mito:*connection* (connect-dbi)))
