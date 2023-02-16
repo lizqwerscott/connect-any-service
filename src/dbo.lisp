@@ -80,10 +80,16 @@
   (let ((mito:*connection* (connect-dbi)))
     (find-dao 'device :gid gid)))
 
+(defmethod search-device-un (name (user user))
+  (let ((mito:*connection* (connect-dbi)))
+    (find-dao 'device :name name :user user)))
+
 (defmethod register-device (gid type name (user user))
   (let ((mito:*connection* (connect-dbi)))
-    (if-return (search-device gid)
-     (create-dao 'device :gid gid :type type :name name :user user))))
+    (let ((device (search-device-un name user)))
+      (when device
+        (delete-device device))
+      (create-dao 'device :gid gid :type type :name name :user user))))
 
 (defmethod delete-device ((device device))
   (let ((mito:*connection* (connect-dbi)))

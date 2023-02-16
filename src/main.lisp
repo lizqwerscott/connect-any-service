@@ -37,8 +37,7 @@
             (user-name (assoc-value data "name")))
         (format t "add user: ~A~%" data)
         (let ((user (register-user user-name)))
-          (if-let (data (gethash (mito:object-id user) *clipboard-data*))
-            data
+          (if-return (gethash (mito:object-id user) *clipboard-data*)
             (setf (gethash (object-id user) *clipboard-data*)
                   (make-clipboard-data)))
           (register-device (assoc-value device "id")
