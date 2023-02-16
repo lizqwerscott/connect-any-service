@@ -80,7 +80,7 @@
   (handler-case
       (dexador:get
        (quri:make-uri :defaults (format nil "https://api.day.app/~A/Clipboard/" apple-device-id)
-                      :query `(("autoCop" . 1)
+                      :query `(("autoCopy" . 1)
                                ("copy" . ,data))))
     (error (c)
       (log:error c))))
