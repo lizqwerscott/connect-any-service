@@ -2,7 +2,7 @@
   :version "0.1.0"
   :author "lizqwer scott"
   :license "GPL"
-  :depends-on ("clack" "local-time" "yason" "jonathan" "str" "s-base64" "flexi-streams" "log4cl" "mito" "alexandria")
+  :depends-on ("clack" "local-time" "yason" "jonathan" "str" "s-base64" "flexi-streams" "log4cl" "mito" "alexandria" "dexador" "quri")
   :components ((:module "src"
                 :components
                 ((:file "head")

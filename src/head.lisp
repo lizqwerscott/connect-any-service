@@ -20,7 +20,8 @@
    :load-json-file
    :encode-str-base64
 
-   :run-shell))
+   :run-shell
+   :send-to-apple-clipboard))
 (in-package :connect-any-service.head)
 
 (setf yason:*parse-object-as* :alist)
@@ -74,5 +75,14 @@
   (with-output-to-string (out)
     (encode-base64-bytes (string-to-octets str)
                          out)))
+
+(defun send-to-apple-clipboard (apple-device-id data)
+  (handler-case
+      (dexador:get
+       (quri:make-uri :defaults (format nil "https://api.day.app/~A/Clipboard/" apple-device-id)
+                      :query `(("autoCop" . 1)
+                               ("copy" . ,data))))
+    (error (c)
+      (log:error c))))
 
 (in-package :cl-user)

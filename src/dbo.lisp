@@ -7,6 +7,7 @@
    :search-user
    :logout-user
    :user-devices
+   :user-name
    ;; Device
    :device-get-user
    :device-get-gid

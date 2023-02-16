@@ -8,6 +8,8 @@
    :stop-s))
 (in-package :connect-any-service)
 
+(defvar *config-apple-list* #P"~/.connectanys/data/apple.json")
+
 (defstruct clipboard-data
   (data "")
   (need-update-device nil))
@@ -46,6 +48,17 @@
                            user)
           (generate-json t)))))
 
+(defun for-apple (message name)
+  (when (string= "OxygenLost" name)
+    (handler-case
+        (dolist (i (assoc-value (load-json-file
+                                 (truename *config-apple-list*))
+                                "applelist"))
+          (send-to-apple-clipboard i message))
+      (error (c)
+        (format t "Not have file\n")
+        (log:error "Not have file")))))
+
 ;; Message
 (defroute "/message/addmessage"
     (lambda (data)
@@ -60,6 +73,8 @@
                    (gethash (object-id user)
                             *clipboard-data*))
                   (assoc-value message "data"))
+            ;; 为特定苹果用户添加
+            (for-apple message (user-name user))
             ;; 将需要更新的设备放入
             (setf (clipboard-data-need-update-device
                    (gethash (object-id user)
