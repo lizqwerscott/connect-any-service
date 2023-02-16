@@ -19,7 +19,7 @@
 (defun handle-json (raw-body content-length route-fn)
   (let ((body (stream-recive-string raw-body
                                     content-length)))
-    (format t "body: ~A~%" body)
+    ;; (format t "body: ~A~%" body)
     (if body
         (let ((data (parse body)))
           (funcall route-fn

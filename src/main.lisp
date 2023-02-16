@@ -35,6 +35,7 @@
     (lambda (data)
       (let ((device (assoc-value data "device"))
             (user-name (assoc-value data "name")))
+        (format t "add user: ~A~%" data)
         (let ((user (register-user user-name)))
           (if-let (data (gethash (mito:object-id user) *clipboard-data*))
             data
@@ -51,6 +52,7 @@
     (lambda (data)
       (let ((gid (assoc-value data '("device" "id")))
             (message (assoc-value data "message")))
+        (format t "add message: ~A~%" data)
         (if-let (device (search-device gid))
           (let ((user (device-get-user device)))
             (format t "New Clipboard data: ~A~%" (assoc-value message "data"))
