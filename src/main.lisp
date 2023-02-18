@@ -74,7 +74,8 @@
                             *clipboard-data*))
                   (assoc-value message "data"))
             ;; 为特定苹果用户添加
-            (for-apple (assoc-value message "data") (user-name user))
+            (when (not (string= "iOS" (assoc-value data '("device" "type"))))
+              (for-apple (assoc-value message "data") (user-name user)))
             ;; 将需要更新的设备放入
             (setf (clipboard-data-need-update-device
                    (gethash (object-id user)
