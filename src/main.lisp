@@ -128,13 +128,14 @@
     (if-let ((device (search-device
                       (assoc-value data '("device" "id"))))
              (to-device (search-device
-                         (assoc-value data '("todevice" "id"))))
-             (state (assoc-value data "state")))
+                         (assoc-value data '("todevice" "id")))))
       (progn
         (setf *hostmanager*
              (append *hostmanager*
                      (list
-                      (list "enablehost" (device-get-gid to-device) state))))
+                      (list "enablehost"
+                            (device-get-gid to-device)
+                            (assoc-value data "state")))))
         (generate-json t))
       (generate-json nil
                      :code 404
