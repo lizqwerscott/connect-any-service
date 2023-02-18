@@ -21,6 +21,9 @@
                   (make-clipboard-data)))
         (all-users))
 
+;; 是一个列表, 每项都是一个新命令, 命令格式("要做的事情" "哪台设备" 其他参数)
+(defvar *hostmanager* nil)
+
 (defun generate-json (data &key (code 200) (msg "成功"))
   (to-json-a
    `(("code" . ,code)
@@ -101,12 +104,41 @@
                 (generate-json `(("type" . "text")
                                  ("data" . ,(clipboard-data-data clipboard-data))
                                  ("date" . "114514"))))
-              (generate-json `(("type" . "none")
-                               ("data" . "")
-                               ("date" . "114514")))))
+              (if-let (command (find (device-get-gid device)
+                                     *hostmanager*
+                                     :key #'second
+                                     :test #'string=))
+                (progn
+                  (setf *hostmanager* nil)
+                  (generate-json `(("type" . "manager")
+                                  ("data" . ,(format nil "~A" (first command)))
+                                  ("date" . ,(format nil "~A" (third command))))))
+                (generate-json `(("type" . "none")
+                                ("data" . "")
+                                ("date" . "114514"))))))
         (generate-json `(("type" . "none")
                          ("data" . "")
-                         ("date" . "114514"))))))
+                         ("date" . "114514"))
+                       :code 404
+                       :msg "设备未找到"))))
+
+;; Manager
+(defroute "/manager/hostmanager"
+  (lambda (data)
+    (if-let ((device (search-device
+                      (assoc-value data '("device" "id"))))
+             (to-device (search-device
+                         (assoc-value data '("device" "id"))))
+             (state (assoc-value data "state")))
+      (progn
+        (setf *hostmanager*
+             (append *hostmanager*
+                     (list
+                      (list "enablehost" (device-get-gid to-device) state))))
+        (generate-json t))
+      (generate-json nil
+                     :code 404
+                     :msg "设备未找到"))))
 
 (defun start-s (&optional (port 8686))
   (server-start :address "0.0.0.0" :port port :server :woo))
