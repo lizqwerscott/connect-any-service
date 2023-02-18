@@ -111,11 +111,11 @@
                 (progn
                   (setf *hostmanager* nil)
                   (generate-json `(("type" . "manager")
-                                  ("data" . ,(format nil "~A" (first command)))
-                                  ("date" . ,(format nil "~A" (third command))))))
+                                   ("data" . ,(format nil "~A" (first command)))
+                                   ("date" . ,(format nil "~A" (third command))))))
                 (generate-json `(("type" . "none")
-                                ("data" . "")
-                                ("date" . "114514"))))))
+                                 ("data" . "")
+                                 ("date" . "114514"))))))
         (generate-json `(("type" . "none")
                          ("data" . "")
                          ("date" . "114514"))
@@ -128,7 +128,7 @@
     (if-let ((device (search-device
                       (assoc-value data '("device" "id"))))
              (to-device (search-device
-                         (assoc-value data '("device" "id"))))
+                         (assoc-value data '("todevice" "id"))))
              (state (assoc-value data "state")))
       (progn
         (setf *hostmanager*
