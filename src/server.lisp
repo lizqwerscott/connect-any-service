@@ -1,6 +1,6 @@
 (defpackage connect-any-service.server
   (:import-from :str :contains?)
-  (:use :cl :connect-any-service.head :clack :yason :log4cl)
+  (:use :cl :connect-any-service.head :clack :yason :log4cl :lzputils.json)
   (:export
    :defroute
    :server-start
