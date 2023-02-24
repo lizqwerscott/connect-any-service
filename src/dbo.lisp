@@ -71,11 +71,14 @@
 
 (defmethod user-devices ((user user) &optional (remove-device nil))
   (let ((mito:*connection* (connect-dbi)))
-   (remove-if #'(lambda (device)
-                 (string= (device-gid device)
-                          (device-gid remove-device)))
-             (select-dao 'device
-                 (includes 'user)))))
+    (let ((devices (select-dao 'device
+                     (includes 'user))))
+      (if remove-device
+          (remove-if #'(lambda (device)
+                         (string= (device-gid device)
+                                  (device-gid remove-device)))
+                     devices)
+          devices))))
 
 (defun search-device (gid)
   (let ((mito:*connection* (connect-dbi)))

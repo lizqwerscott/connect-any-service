@@ -2,12 +2,13 @@
   :version "0.1.0"
   :author "lizqwer scott"
   :license "GPL"
-  :depends-on ("clack" "local-time" "str" "s-base64" "flexi-streams" "log4cl" "mito" "alexandria" "dexador" "quri" "lzputils")
+  :depends-on ("clack" "local-time" "str" "s-base64" "flexi-streams" "log4cl" "mito" "alexandria" "dexador" "quri" "lzputils" "portal")
   :components ((:module "src"
                 :components
                 ((:file "head")
                  (:file "dbo")
                  (:file "server")
+                 (:file "ws")
                  (:file "main"))))
   :description ""
   :in-order-to ((test-op (test-op "connect-any-service/tests"))))

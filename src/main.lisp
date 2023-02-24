@@ -1,7 +1,8 @@
 (defpackage connect-any-service
   (:import-from :mito :object-id)
   (:import-from :alexandria :if-let)
-  (:use :cl :connect-any-service.head :connect-any-service.server :connect-any-service.dbo :str :lzputils.json :lzputils.used)
+  (:import-from :alexandria :when-let)
+  (:use :cl :connect-any-service.head :connect-any-service.server :connect-any-service.dbo :lzputils.json :lzputils.used :connect-any-service.ws)
   (:export
    :start-s
    :restart-s
@@ -79,6 +80,9 @@
             ;; 为特定苹果用户添加
             (when (not (string= "iOS" (assoc-value data '("device" "type"))))
               (for-apple (assoc-value message "data") (user-name user)))
+            ;; websocket 剪切板立即更新
+            (broadcast-clipboard device
+                                 (assoc-value message "data"))
             ;; 将需要更新的设备放入
             (setf (clipboard-data-need-update-device
                    (gethash (object-id user)
@@ -142,10 +146,12 @@
                      :msg "设备未找到"))))
 
 (defun start-s (&optional (port 8686))
-  (server-start :address "0.0.0.0" :port port :server :woo))
+  (server-start :address "0.0.0.0" :port port :server :woo)
+  (start-ws))
 
 (defun restart-s (&optional (port 8686))
-  (server-start :address "0.0.0.0" :port port :server :woo))
+  (server-start :address "0.0.0.0" :port port :server :woo)
+  (stop-ws))
 
 (defun stop-s ()
   (server-stop))
