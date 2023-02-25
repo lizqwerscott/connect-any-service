@@ -53,15 +53,20 @@
           (generate-json t)))))
 
 (defun for-apple (message name)
-  (when (string= "OxygenLost" name)
-    (handler-case
-        (dolist (i (assoc-value (load-json-file
-                                 (truename *config-apple-list*))
-                                "applelist"))
-          (send-to-apple-clipboard i message))
-      (error (c)
-        (format t "Not have file\n")
-        (log:error "Not have file")))))
+  (mapcar #'(lambda (apple)
+              (let ((a-name (assoc-value apple "name"))
+                    (devices (assoc-value apple "apple")))
+                (when (string= name a-name)
+                  (handler-case
+                      (dolist (i devices)
+                        (send-to-apple-clipboard i message))
+                    (error (c)
+                      (format t "Not have file\n")
+                      (log:error "Not have file"))))))
+          (assoc-value (load-json-file
+                        (truename
+                         *config-apple-list*))
+                       "applelist")))
 
 ;; Message
 (defroute "/message/addmessage"
