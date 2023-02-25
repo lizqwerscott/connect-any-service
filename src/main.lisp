@@ -150,10 +150,10 @@
   (start-ws))
 
 (defun restart-s (&optional (port 8686))
-  (server-start :address "0.0.0.0" :port port :server :woo)
-  (stop-ws))
+  (server-start :address "0.0.0.0" :port port :server :woo))
 
 (defun stop-s ()
-  (server-stop))
+  (server-stop)
+  (stop-ws))
 
 (in-package :cl-user)
