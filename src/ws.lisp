@@ -27,12 +27,13 @@
 (defun broadcast-clipboard (device data)
   (mapcar #'(lambda (device-id)
               (let ((socket (gethash device-id *device-to-connections*)))
-                (when socket
-                  (format t "send socket~%")
-                  (pws:send socket
+                (format t "send socket~%")
+                (if socket
+                    (pws:send socket
                             (to-json-a `(("type" . "text")
                                          ("data" . ,data)
-                                         ("date" . "114514")))))))
+                                         ("date" . "114514"))))
+                    (log:error "socket is nil"))))
           (mapcar #'device-get-gid
                   (user-devices (device-get-user device)
                                 device))))
