@@ -150,10 +150,10 @@
                      :code 404
                      :msg "设备未找到"))))
 
-(defun start-s (&optional (port 8686))
+(defun start-s (&optional (port 22010))
   (server-start :address "0.0.0.0" :port port :server :woo))
 
-(defun restart-s (&optional (port 8686))
+(defun restart-s (&optional (port 22010))
   (server-start :address "0.0.0.0" :port port :server :woo))
 
 (defun stop-s ()
